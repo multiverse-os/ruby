@@ -3,8 +3,6 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
-	"os"
-	"path/filepath"
 	"strings"
 
 	cli "github.com/multiverse-os/cli"
@@ -20,6 +18,16 @@ func main() {
 		Name:       "ruby",
 		HelpHeader: "ruby",
 		Version:    ruby.Version(),
+		Commands: []*Command{
+			cli.Command{
+				Name:    "init",
+				Aliases: []string{"l"},
+				Usage:   "initialize the ruby binaries by downloadiang, verifying and embedding the data",
+				Action: func(c *cli.Context) error {
+					return nil
+				},
+			},
+		},
 		Action: func(c *cli.Context) error {
 			outputBytes, err := memexec.Command(Ruby, "/memfs/rubyscripts/helloworld.rb").CombinedOutput()
 			if err != nil {
