@@ -10,18 +10,24 @@ import (
 )
 
 func main() {
-
-	fmt.Println("ruby")
 	cmd := cli.New(&cli.CLI{
-		Name:       "ruby",
-		HelpHeader: "ruby",
+		Name: "ruby",
 		//Version:    ruby.Version(),
 		Commands: []cli.Command{
 			cli.Command{
-				Name:    "init",
-				Aliases: []string{"l"},
-				Usage:   "initialize the ruby binaries by downloadiang, verifying and embedding the data",
+				Name:    "exec",
+				Aliases: []string{"e"},
+				Usage:   "execute one of the stored binaries stored within the runtime",
 				Action: func(c *cli.Context) error {
+					args := c.Args
+					if len(args) > 0 && args[0] == "ruby" {
+						outputBytes, err := memexec.Command(Ruby, "/memfs/rubyscripts/helloworld.rb").CombinedOutput()
+						if err != nil {
+							fmt.Errorf("[error] failed to execute binary from memory:", err)
+						}
+						// TODO: This is temporary for development
+						fmt.Println("result:", string(outputBytes))
+					}
 					return nil
 				},
 			},
@@ -50,13 +56,6 @@ func main() {
 			},
 		},
 		DefaultAction: func(c *cli.Context) error {
-			outputBytes, err := memexec.Command(Ruby, "/memfs/rubyscripts/helloworld.rb").CombinedOutput()
-			if err != nil {
-				fmt.Errorf("[error] failed to execute binary from memory:", err)
-			}
-
-			// TODO: This is temporary for development
-			fmt.Println("result:", string(outputBytes))
 			return nil
 		},
 	})
