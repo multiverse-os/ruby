@@ -1,16 +1,18 @@
 package ruby
 
 import (
-	"github.com/multiverse-os/libexec"
+	libexec "github.com/multiverse-os/ruby/libexec"
 )
+
+var Binary *Executable
 
 // Alias for a more intuitive API
 func New(rubyBytes []byte) *Binaries {
 	binaries := &Binaries{
 		Ruby: LoadExecutable("ruby", rubyBytes),
-		Ruby: LoadExecutable("irb", libexec.IRB),
+		IRB:  LoadExecutable("irb", libexec.IRB),
 	}
-	Binary := binaries.Ruby
+	Binary = binaries.Ruby
 	return binaries
 }
 
@@ -33,15 +35,13 @@ type Binaries struct {
 	Version Version
 	Ruby    *Executable
 	Bundler *Executable
+	IRB     *Executable
 	Gem     *Executable
 	RDoc    *Executable
 	ERB     *Executable
 	RI      *Executable
 	Gems    []string
 }
-
-// Alias for the Ruby Binary for a more please intutive API
-var Binary *Executable
 
 // TODO: **Ideally we would statically build the Gems into this binary/package
 // too, to make it work more as a Go program would be expected to. And that

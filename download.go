@@ -1,42 +1,57 @@
 package ruby
 
 import (
+	"archive/tar"
+	"bytes"
+	"compress/gzip"
 	"fmt"
+	"io"
+	"net/http"
 )
 
-type Feed struct {
+type DebianPackage struct {
+	Files map[string][]byte
 }
 
-const rubyReleasesRSS = "http://www.ruby-lang.org/en/feeds/news.rss"
+func DownloadDebianPackage() DebianPackage {
 
-type ReleaseChecksums struct {
-	SHA1   string
-	SHA256 string
-	SHA512 string
-}
+	deb := DebianPackage{
+		Files: make(map[string][]byte),
+	}
 
-// TODO: Or maybe CommitsURL since its not []string of commits
-type Release struct {
-	URL         string
-	Title       string
-	Description string
-	Commits     string
-	Comment     string
-	Size        int
-	Checksum    ReleaseChecksums
-}
-
-func LoadReleasesFeed() (feed *Feed) {
-	if feed, err := rss.Fetch("http://example.com/rss"); err != nil {
+	response, err := http.Get("https://packages.debian.org/bullseye/amd64/ruby/download")
+	if err != nil {
 		panic(err)
 	}
-	return feed
-}
+	defer response.Body.Close()
+	//io.Copy(&download, response.Body)
+	//downloadedBytes := download.Bytes()
+	//fmt.Println("size of download:", len(downloadedBytes))
 
-func (self *Feed) Newest() *Release {
-	if err = feed.Update(); err != nil {
+	// Decompress reads in, decompresses it, and writes it to out.
+
+	// TODO: handle both the un gzip and untar to get the files within
+	//pipeRead, pipeWrite := io.Pipe()
+	compressedArchive, err := gzip.NewReader(response.Body)
+	if err != nil {
 		panic(err)
 	}
-	self.Update()
 
+	archive := tar.NewReader(compressedArchive)
+	fmt.Println("archive:", archive)
+	for {
+		file, err := archive.Next()
+		if err == io.EOF {
+			break
+		}
+		var fileBuffer bytes.Buffer
+
+		fmt.Println("unarchived file:", file.Name)
+		io.Copy(&fileBuffer, archive)
+		fmt.Println("unarchived size:", len(fileBuffer.Bytes()))
+		deb.Files[file.Name] = fileBuffer.Bytes()
+
+	}
+
+	return deb
 }

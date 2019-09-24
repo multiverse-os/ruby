@@ -2,8 +2,7 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
-	"strings"
+	"os"
 
 	cli "github.com/multiverse-os/cli"
 	ruby "github.com/multiverse-os/ruby"
@@ -11,14 +10,13 @@ import (
 )
 
 func main() {
-	ruby := ruby.Binaries.Ruby()
 
 	fmt.Println("ruby")
 	cmd := cli.New(&cli.CLI{
 		Name:       "ruby",
 		HelpHeader: "ruby",
-		Version:    ruby.Version(),
-		Commands: []*Command{
+		//Version:    ruby.Version(),
+		Commands: []cli.Command{
 			cli.Command{
 				Name:    "init",
 				Aliases: []string{"l"},
@@ -27,8 +25,31 @@ func main() {
 					return nil
 				},
 			},
+			cli.Command{
+				Name:    "download",
+				Aliases: []string{"d"},
+				Usage:   "download the newest ruby binary release and verify it",
+				Action: func(c *cli.Context) error {
+					// Ruby
+
+					// NOTE: Turns out the RSS feed just has source
+					//feed, err := ruby.LoadReleasesFeed()
+					//if err != nil {
+					//	panic(err)
+					//}
+					//newestRelease := feed.Newest()
+					//fmt.Println("newestRelease version:", newestRelease.Version)
+					//newestRelease = newestRelease.Download()
+					//fmt.Println("files downloaded:", len(newestRelease.Files))
+
+					debPackageFiles := ruby.DownloadDebianPackage()
+					fmt.Println("files downloaded:", len(debPackageFiles.Files))
+
+					return nil
+				},
+			},
 		},
-		Action: func(c *cli.Context) error {
+		DefaultAction: func(c *cli.Context) error {
 			outputBytes, err := memexec.Command(Ruby, "/memfs/rubyscripts/helloworld.rb").CombinedOutput()
 			if err != nil {
 				fmt.Errorf("[error] failed to execute binary from memory:", err)
@@ -40,9 +61,6 @@ func main() {
 		},
 	})
 	cmd.Run(os.Args)
-}
-
-func downloadRuby() {
 }
 
 func embed() {
