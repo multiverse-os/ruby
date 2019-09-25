@@ -20,14 +20,13 @@ func main() {
 				Usage:   "execute one of the stored binaries stored within the runtime",
 				Action: func(c *cli.Context) error {
 					args := c.Args
-					if len(args) > 0 && args[0] == "ruby" {
-						outputBytes, err := memexec.Command(Ruby, "/memfs/rubyscripts/helloworld.rb").CombinedOutput()
-						if err != nil {
-							fmt.Errorf("[error] failed to execute binary from memory:", err)
-						}
-						// TODO: This is temporary for development
-						fmt.Println("result:", string(outputBytes))
+					fmt.Println("args:", args)
+					output, err := memexec.Command(Ruby, args...).CombinedOutput()
+					if err != nil {
+						fmt.Errorf("[error] failed to execute binary from memory:", err)
 					}
+					fmt.Println("result:", string(output))
+
 					return nil
 				},
 			},

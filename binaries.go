@@ -1,7 +1,7 @@
 package ruby
 
 import (
-	libexec "github.com/multiverse-os/ruby/libexec"
+//libexec "github.com/multiverse-os/ruby/libexec"
 )
 
 var Binary *Executable
@@ -9,8 +9,8 @@ var Binary *Executable
 // Alias for a more intuitive API
 func New(rubyBytes []byte) *Binaries {
 	binaries := &Binaries{
-		Ruby: LoadExecutable("ruby", rubyBytes),
-		IRB:  LoadExecutable("irb", libexec.IRB),
+		//Ruby: LoadExecutable("ruby", rubyBytes),
+		//IRB:  LoadExecutable("irb", libexec.IRB),
 	}
 	Binary = binaries.Ruby
 	return binaries
