@@ -17,4 +17,4 @@ setup:
 	cd /usr/lib/x86_64-linux-gnu/ && sudo ln -s libruby.so.$(RUBY_VERSION) libruby.so
 
 clean:
-
+	-@rm -rf $(CLEAN_OBJS) $(DLIB) $(TARGET).h $(TARGET).o $(TARGET)
