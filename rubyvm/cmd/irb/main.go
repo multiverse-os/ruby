@@ -6,7 +6,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/multiverse-os/ruby/rubyvm/interpreter/vm"
+	vm "github.com/multiverse-os/ruby/rubyvm/vm"
 )
 
 func main() {

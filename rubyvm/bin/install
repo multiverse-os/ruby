@@ -1,5 +1,0 @@
-#!/usr/bin/env bash
-
-mkdir -p $HOME/.rubyvm
-ln -s $(pwd)/$(dirname $(dirname $0))/lib $HOME/.rubyvm
-ln -s $(pwd)/$(dirname $(dirname $0))/bin $HOME/.rubyvm

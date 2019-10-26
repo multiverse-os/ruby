@@ -7,8 +7,8 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/multiverse-os/ruby/rubyvm/interpreter/vm"
-	"github.com/multiverse-os/ruby/rubyvm/parser"
+	parser "github.com/multiverse-os/ruby/rubyvm/interpreter/parser"
+	vm "github.com/multiverse-os/ruby/rubyvm/vm"
 )
 
 var verboseFlag = flag.Bool("verbose", false, "enables verbose mode")
