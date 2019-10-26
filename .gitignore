@@ -1,0 +1,6 @@
+bin
+bin/ruby 
+bin/rheap
+bin/irb
+include/libruby.so
+include/ruby

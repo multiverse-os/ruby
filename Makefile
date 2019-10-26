@@ -3,23 +3,34 @@
 #DLIB          = $(TARGET).so
 RUBY_VERSION   = 2.5
 CLEANOBJS      = *.o *.bak *.so *.h go.h
+RUBY_MODE      = embed
+#RUBY_MODE      = vm
+ARCH           = x86_64
+RUBY_BIN       = /usr/bin/ruby
 
 #all: setup ruby irb rheap
 all: ruby
 
-setup:
+setup: download vendor
+	cd /usr/lib/$(ARCH)-linux-gnu/ && sudo ln -s libruby.$(RUBY_VERSION).so libruby.so 
+
+download: 
 	sudo apt-get install ruby libruby ruby-dev
-	cd /usr/lib/x86_64-linux-gnu/ && sudo ln -s libruby.$(RUBY_VERSION).so libruby.so 
-	cp /usr/lib/x86_64-linux-gnu/libruby-$(RUBY_VERSION).so
+
+vendor:
+	cp /usr/lib/$(ARCH)-linux-gnu/libruby-$(RUBY_VERSION).so ./include/libruby.so
+	cp $(RUBY_BIN) ./include/ruby
+	chmod 770 ./include/ruby
+	chmod 770 ./include/libruby.so
 
 ruby: clean
-	go build -o bin/ cmd/ruby/main.go
+	go build -o bin/ cmd/$(RUBY_MODE)/ruby/main.go
 
 irb: clean
-	go build -o bin/ cmd/irb/main.go
+	go build -o bin/ cmd/$(RUBY_MODE)/irb/main.go
 
 rheap: clean
-	go build -o bin/ cmd/rheap/main.go
+	go build -o bin/ cmd/rheap/main.go 
 
 # TODO: Write tools to help generate and install go files in a ruby scripts in binary folder  
 # and ensure the library supports calling those scripts easily. 
@@ -29,6 +40,5 @@ rheap: clean
 ###############################################################################
 
 clean:
-	-@rm -rf bin/ruby 
-	-@rm -rf bin/irb
-	-@rm -rf bin/rheap
+	-@rm -rf bin
+	-@rm -rf include
