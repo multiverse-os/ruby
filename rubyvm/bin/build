@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+go generate github.com/multiverse-os/ruby/rubyvm/parser
+
+rm bin/irb bin/ruby
+
+root=$(dirname $0)/..
+pushd $root
+go build -o bin/irb ./main/irb
+go build -o bin/ruby ./main/ruby
+popd
