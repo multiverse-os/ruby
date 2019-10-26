@@ -19,7 +19,8 @@ func main() {
 				Aliases: []string{"e"},
 				Usage:   "execute one of the stored binaries stored within the runtime",
 				Action: func(c *cli.Context) error {
-					args := c.Args
+					args := c.Args[1:]
+
 					fmt.Println("args:", args)
 					output, err := memexec.Command(Ruby, args...).CombinedOutput()
 					if err != nil {
